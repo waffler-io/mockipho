@@ -1,0 +1,29 @@
+{
+    "name": "erickjmenezes/mockipho",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "ErickJMenezes\\Mockipho\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "ErickJMenezes\\Mockipho\\Tests\\": "tests/"
+        }
+    },
+    "authors": [
+        {
+            "name": "ErickJMenezes",
+            "email": "erickmenezes.dev@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {},
+    "require-dev": {
+        "php": ">=8.0",
+        "phpunit/phpunit": "^9.5.0",
+        "mockery/mockery": "^1.5.0",
+        "vimeo/psalm": "^4.22.0"
+    }
+}

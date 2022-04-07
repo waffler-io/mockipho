@@ -7,8 +7,12 @@
  * with this source code in the file LICENCE.
  */
 
+namespace Waffler\Mockipho\Tests\Unit;
+
+use InvalidArgumentException;
 use Mockery\Exception\NoMatchingExpectationException;
 use Mockery\ExpectationInterface;
+use stdClass;
 use Waffler\Mockipho\Expectations\TypeExpectation;
 use Waffler\Mockipho\Mock;
 use Waffler\Mockipho\Mockipho;

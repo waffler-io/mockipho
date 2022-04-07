@@ -10,17 +10,14 @@
 namespace Waffler\Mockipho\Tests\Fixtures\FakeTestCases;
 
 use Waffler\Mockipho\Mock;
-use Waffler\Mockipho\Tests\Fixtures\FakeServices\ServiceA;
 
 /**
- * Class TestCaseA.
+ * Class TestCaseB.
  *
  * @author ErickJMenezes <erickmenezes.dev@gmail.com>
  */
-class TestCaseA
+class TestCaseB
 {
     #[Mock]
-    public readonly ServiceA $serviceA;
-
-    public readonly ServiceA $serviceB;
+    public $serviceA;
 }

@@ -11,15 +11,19 @@ namespace Waffler\Mockipho\Tests\Unit\Loaders;
 
 use Mockery\MockInterface;
 use PHPUnit\Framework\TestCase;
+use Waffler\Mockipho\Exceptions\IllegalPropertyException;
 use Waffler\Mockipho\Loaders\MockLoader;
 use Waffler\Mockipho\Tests\Fixtures\FakeServices\ServiceA;
 use Waffler\Mockipho\Tests\Fixtures\FakeTestCases\TestCaseA;
+use Waffler\Mockipho\Tests\Fixtures\FakeTestCases\TestCaseB;
+use Waffler\Mockipho\Tests\Fixtures\FakeTestCases\TestCaseC;
 
 /**
  * Class MockLoaderTest.
  *
  * @author ErickJMenezes <erickmenezes.dev@gmail.com>
  * @covers \Waffler\Mockipho\Loaders\MockLoader
+ * @covers \Waffler\Mockipho\Exceptions\IllegalPropertyException
  */
 class MockLoaderTest extends TestCase
 {
@@ -58,6 +62,33 @@ class MockLoaderTest extends TestCase
         $this->mockLoader->load($objectB);
         self::assertTrue(isset($objectA->serviceA), "The objectA mock is not set.");
         self::assertTrue(isset($objectB->serviceA), "The objectB mock is not set.");
+        self::assertTrue(!isset($objectA->serviceB), "The objectA mock is set.");
         self::assertSame($objectA->serviceA, $objectB->serviceA);
+    }
+
+    /**
+     * @return void
+     * @author ErickJMenezes <erickmenezes.dev@gmail.com>
+     * @test
+     */
+    public function itMustThrowIllegalPropertyExceptionIfTheMockHasNoTypeAnnotation(): void
+    {
+        $this->expectException(IllegalPropertyException::class);
+        $this->expectExceptionMessage("Mock property must have a type.");
+        $object = new TestCaseB();
+        $this->mockLoader->load($object);
+    }
+
+    /**
+     * @return void
+     * @author ErickJMenezes <erickmenezes.dev@gmail.com>
+     * @test
+     */
+    public function itMustThrowIllegalPropertyExceptionIfTheMockTypeIsNotClassOrInterface(): void
+    {
+        $this->expectException(IllegalPropertyException::class);
+        $this->expectExceptionMessage("[string] is not a valid class or interface.");
+        $object = new TestCaseC();
+        $this->mockLoader->load($object);
     }
 }

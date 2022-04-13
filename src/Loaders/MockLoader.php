@@ -86,7 +86,32 @@ class MockLoader
                 return $mock;
             }
         }
-        $mock = new class (Mockery::mock($className)) {
+        $mock = $this->createMockProxy(Mockery::mock($className));
+        $zReflection = new \ZEngine\Reflection\ReflectionClass($mock);
+
+        if (interface_exists($className)) {
+            $zReflection->addInterfaces($className);
+        } elseif (class_exists($className)) {
+            $zReflection->setParent($className);
+            foreach (
+                $zReflection->getParentClass()
+                    ->getMethods() as $reflectionMethod
+            ) {
+                if (in_array($reflectionMethod->getName(), ['__call', '__get', '__set'], true)) {
+                    continue;
+                }
+                $zReflection->removeMethods($reflectionMethod->getName());
+            }
+        }
+        $zReflection->addInterfaces(MockInterface::class, LegacyMockInterface::class);
+
+        $this->mocks[$mock] = $className;
+        return $mock;
+    }
+
+    private function createMockProxy(MockInterface|HigherOrderMessage|LegacyMockInterface $mock): object
+    {
+        return new class ($mock) {
             public function __construct(
                 public MockInterface|HigherOrderMessage|LegacyMockInterface $mockeryBaseMock
             ) {}
@@ -117,9 +142,12 @@ class MockLoader
                 $this->mockeryBaseMock->$name = $value;
             }
 
-            private function getCallerClass(): string
+            private function getCallerClass(): ?string
             {
-                return debug_backtrace(limit: 3)[2]['class'];
+                $debugBacktrace = debug_backtrace(limit: 4);
+                return $debugBacktrace[2]['class']
+                    ?? $debugBacktrace[3]['class']
+                    ?? null;
             }
 
             private function isMethodOfMockery(string $method): bool
@@ -128,25 +156,5 @@ class MockLoader
                     || method_exists(LegacyMockInterface::class, $method);
             }
         };
-        $zReflection = new \ZEngine\Reflection\ReflectionClass($mock);
-
-        if (interface_exists($className)) {
-            $zReflection->addInterfaces($className);
-        } elseif (class_exists($className)) {
-            $zReflection->setParent($className);
-            foreach (
-                $zReflection->getParentClass()
-                    ->getMethods() as $reflectionMethod
-            ) {
-                if (in_array($reflectionMethod->getName(), ['__call', '__get', '__set'], true)) {
-                    continue;
-                }
-                $zReflection->removeMethods($reflectionMethod->getName());
-            }
-        }
-        $zReflection->addInterfaces(MockInterface::class, LegacyMockInterface::class);
-
-        $this->mocks[$mock] = $className;
-        return $mock;
     }
 }

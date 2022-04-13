@@ -35,13 +35,20 @@ use Waffler\Mockipho\Tests\Fixtures\FakeServices\ServiceA;
  * @covers         \Waffler\Mockipho\Expectations\AnyString
  * @covers         \Waffler\Mockipho\Expectations\AnyValue
  * @covers         \Waffler\Mockipho\ExpectationBuilder
+ * @covers         \Waffler\Mockipho\MethodCall
  * @psalm-suppress PropertyNotSetInConstructor
  */
 class MockiphoTest extends TestCase
 {
+    /**
+     * @var \Waffler\Mockipho\Tests\Fixtures\FakeServices\ServiceA&\Mockery\MockInterface
+     */
     #[Mock]
     private ServiceA $serviceA;
 
+    /**
+     * @var \Waffler\Mockipho\Expectations\TypeExpectation&\Mockery\MockInterface
+     */
     #[Mock]
     private TypeExpectation $typeExpectation;
 
@@ -57,9 +64,10 @@ class MockiphoTest extends TestCase
             ->thenReturn('it works!');
 
         self::assertInstanceOf(ExpectationInterface::class, $expectation);
-        self::assertNotNull($expectation->getMock()
-            ->mockery_getExpectationsFor('getFoo'));
-        self::assertEquals('it works!', $this->serviceA->getFoo());
+        $expectationDirector = $expectation->getMock()
+            ->mockery_getExpectationsFor('getFoo');
+        self::assertNotNull($expectationDirector);
+        self::assertEquals('it works!', $expectationDirector->call([]));
     }
 
     /**
@@ -73,7 +81,8 @@ class MockiphoTest extends TestCase
         Mockipho::when($this->serviceA->sum(1, 2))
             ->thenReturn(5);
 
-        self::assertEquals(5, $this->serviceA->sum(1, 2));
+        self::assertEquals(5, $this->serviceA->mockery_getExpectationsFor('sum')
+            ?->call([1, 2]));
     }
 
     /**
@@ -87,7 +96,8 @@ class MockiphoTest extends TestCase
         self::expectException(NoMatchingExpectationException::class);
         Mockipho::when($this->serviceA->sum(Mockipho::anyString(), 2))
             ->thenReturn(5);
-        self::assertEquals(5, $this->serviceA->sum(1, 2));
+        self::assertEquals(5, $this->serviceA->mockery_getExpectationsFor('sum')
+            ?->call([1, 2]));
     }
 
     /**
@@ -345,6 +355,7 @@ class MockiphoTest extends TestCase
         Mockipho::when($this->typeExpectation->test(Mockipho::anyValue()))
             ->thenReturn(true);
 
-        self::assertTrue($this->typeExpectation->test('foo'));
+        self::assertTrue($this->typeExpectation->mockery_getExpectationsFor('test')
+            ?->call(['foo']));
     }
 }

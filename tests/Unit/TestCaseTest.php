@@ -24,6 +24,9 @@ use Waffler\Mockipho\Tests\Fixtures\FakeServices\ServiceA;
  */
 class TestCaseTest extends TestCase
 {
+    /**
+     * @var \Waffler\Mockipho\Tests\Fixtures\FakeServices\ServiceA&MockInterface
+     */
     #[Mock]
     private ServiceA $serviceA;
 
@@ -38,7 +41,10 @@ class TestCaseTest extends TestCase
             ->twice()
             ->thenReturn('a', 'b');
 
-        self::assertEquals('a', $this->serviceA->getFoo());
-        self::assertEquals('b', $this->serviceA->getFoo());
+        $expectationDirector = $this->serviceA->mockery_getExpectationsFor('getFoo');
+
+        self::assertNotNull($expectationDirector);
+        self::assertEquals('a', $expectationDirector->call([]));
+        self::assertEquals('b', $expectationDirector->call([]));
     }
 }

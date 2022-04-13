@@ -12,6 +12,7 @@ declare(strict_types = 1);
 namespace Waffler\Mockipho\Loaders;
 
 use Mockery;
+use Mockery\HigherOrderMessage;
 use Mockery\LegacyMockInterface;
 use Mockery\MockInterface;
 use ReflectionClass;
@@ -19,6 +20,7 @@ use ReflectionNamedType;
 use Waffler\Mockipho\Exceptions\IllegalPropertyException;
 use Waffler\Mockipho\MethodCall;
 use Waffler\Mockipho\Mock;
+use Waffler\Mockipho\TestCase;
 use WeakMap;
 use ZEngine\Core;
 
@@ -54,12 +56,16 @@ class MockLoader
             $property->setAccessible(true);
             $reflectionType = $property->getType();
             if (!$reflectionType instanceof ReflectionNamedType) {
-                throw new IllegalPropertyException($property,
-                    'Mock property must have a type. Intersection and Union types are not supported.');
+                throw new IllegalPropertyException(
+                    $property,
+                    'Mock property must have a type. Intersection and Union types are not supported.'
+                );
             }
             if (!class_exists($reflectionType->getName()) && !interface_exists($reflectionType->getName())) {
-                throw new IllegalPropertyException($property,
-                    "[{$reflectionType->getName()}] is not a valid class or interface.");
+                throw new IllegalPropertyException(
+                    $property,
+                    "[{$reflectionType->getName()}] is not a valid class or interface."
+                );
             }
             $mock = $this->resolveOrCreateMock($reflectionType->getName());
             $property->setValue($object, $mock);
@@ -82,38 +88,44 @@ class MockLoader
         }
         $mock = new class (Mockery::mock($className)) {
             public function __construct(
-                public MockInterface|Mockery\HigherOrderMessage|LegacyMockInterface $__mock
+                public MockInterface|HigherOrderMessage|LegacyMockInterface $mockeryBaseMock
             ) {}
 
             public function __call(string $name, array $arguments): mixed
             {
-                if (
-                    // is_a($this->getCallerClass(), TestCase::class, true) &&
-                empty($this->__mock->mockery_getExpectationsFor($name))
-                ) {
+                if (is_a($this->getCallerClass(), TestCase::class, true)) {
+                    if ($this->isMethodOfMockery($name)) {
+                        return $this->mockeryBaseMock->$name(...$arguments);
+                    }
                     return new MethodCall(
-                        $this->__mock,
+                        $this->mockeryBaseMock,
                         $name,
                         $arguments
                     );
                 } else {
-                    return $this->__mock->$name(...$arguments);
+                    return $this->mockeryBaseMock->$name(...$arguments);
                 }
             }
 
             public function __get(string $name)
             {
-                return $this->__mock->$name;
+                return $this->mockeryBaseMock->$name;
             }
 
             public function __set(string $name, $value): void
             {
-                $this->__mock->$name = $value;
+                $this->mockeryBaseMock->$name = $value;
             }
 
             private function getCallerClass(): string
             {
                 return debug_backtrace(limit: 3)[2]['class'];
+            }
+
+            private function isMethodOfMockery(string $method): bool
+            {
+                return method_exists(MockInterface::class, $method)
+                    || method_exists(LegacyMockInterface::class, $method);
             }
         };
         $zReflection = new \ZEngine\Reflection\ReflectionClass($mock);
@@ -126,6 +138,9 @@ class MockLoader
                 $zReflection->getParentClass()
                     ->getMethods() as $reflectionMethod
             ) {
+                if (in_array($reflectionMethod->getName(), ['__call', '__get', '__set'], true)) {
+                    continue;
+                }
                 $zReflection->removeMethods($reflectionMethod->getName());
             }
         }

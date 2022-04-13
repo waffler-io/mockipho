@@ -11,6 +11,7 @@ declare(strict_types = 1);
 
 namespace Waffler\Mockipho;
 
+use InvalidArgumentException;
 use Waffler\Mockipho\Expectations\AnyArray;
 use Waffler\Mockipho\Expectations\AnyBoolean;
 use Waffler\Mockipho\Expectations\AnyDouble;
@@ -34,16 +35,18 @@ class Mockipho
     /**
      * Defines an expectation for a method call.
      *
-     * @param \Closure $methodIsCalled
-     * @param mixed    ...$withArgs
+     * @param mixed $methodCall
      *
      * @return \Waffler\Mockipho\ExpectationBuilder
-     * @throws \ReflectionException
      * @author         ErickJMenezes <erickmenezes.dev@gmail.com>
      * @psalm-suppress DuplicateFunction
      */
-    public static function when(MethodCall $methodCall): ExpectationBuilder
+    public static function when(mixed $methodCall): ExpectationBuilder
     {
+        if (!$methodCall instanceof MethodCall) {
+            throw new InvalidArgumentException("The argument must be the method call of a mock.");
+        }
+
         $expectation = new ExpectationBuilder($methodCall->mock->shouldReceive($methodCall->method));
         if (empty($methodCall->arguments)) {
             return $expectation;

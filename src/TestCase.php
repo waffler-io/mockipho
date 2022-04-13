@@ -12,7 +12,6 @@ declare(strict_types = 1);
 namespace Waffler\Mockipho;
 
 use Mockery\Adapter\Phpunit\MockeryTestCase;
-use Waffler\Mockipho\Integrations\MockiphoPhpUnitIntegration;
 use Waffler\Mockipho\Loaders\MockLoader;
 
 /**

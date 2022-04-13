@@ -11,27 +11,20 @@ declare(strict_types = 1);
 
 namespace Waffler\Mockipho;
 
-use Closure;
-use Mockery\CompositeExpectation;
-use Mockery\Expectation;
-use Mockery\ExpectationInterface;
 use Waffler\Mockipho\Expectations\TypeExpectation;
 
 /**
  * Defines an expectation for a method call.
  *
- * @param \Closure $methodIsCalled
- * @param mixed    ...$withArgs
+ * @param mixed $methodCall
  *
- * @return \Mockery\Expectation|\Mockery\CompositeExpectation|\Mockery\ExpectationInterface
- * @throws \ReflectionException
- * @throws \InvalidArgumentException
- * @author         ErickJMenezes <erickmenezes.dev@gmail.com>
+ * @return \Waffler\Mockipho\ExpectationBuilder
  * @psalm-suppress DuplicateFunction
+ * @author         ErickJMenezes <erickmenezes.dev@gmail.com>
  */
-function when(Closure $methodIsCalled, mixed ...$withArgs): Expectation|CompositeExpectation|ExpectationInterface
+function when(mixed $methodCall): ExpectationBuilder
 {
-    return Mockipho::when($methodIsCalled, ...$withArgs);
+    return Mockipho::when($methodCall);
 }
 
 /**
@@ -81,7 +74,8 @@ function anyFloat(): TypeExpectation
 /**
  * Expects the given parameter must be an instance of the given className.
  *
- * @param string $classString
+ * @param string             $classString
+ *
  * @psalm-param class-string $classString
  *
  * @return \Waffler\Mockipho\Expectations\TypeExpectation

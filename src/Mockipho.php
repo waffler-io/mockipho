@@ -13,9 +13,6 @@ namespace Waffler\Mockipho;
 
 use Closure;
 use InvalidArgumentException;
-use Mockery\CompositeExpectation;
-use Mockery\Expectation;
-use Mockery\ExpectationInterface;
 use Mockery\MockInterface;
 use ReflectionFunction;
 use Waffler\Mockipho\Expectations\AnyArray;
@@ -44,22 +41,19 @@ class Mockipho
      * @param \Closure $methodIsCalled
      * @param mixed    ...$withArgs
      *
-     * @return \Mockery\Expectation|\Mockery\CompositeExpectation|\Mockery\ExpectationInterface
+     * @return \Waffler\Mockipho\ExpectationBuilder
      * @throws \ReflectionException
-     * @throws \InvalidArgumentException
      * @author         ErickJMenezes <erickmenezes.dev@gmail.com>
      * @psalm-suppress DuplicateFunction
      */
-    public static function when(
-        Closure $methodIsCalled,
-        mixed ...$withArgs
-    ): Expectation|CompositeExpectation|ExpectationInterface {
+    public static function when(Closure $methodIsCalled, mixed ...$withArgs): ExpectationBuilder
+    {
         $reflectionClosure = new ReflectionFunction($methodIsCalled);
         $closureThis = $reflectionClosure->getClosureThis();
         if (!$closureThis instanceof MockInterface) {
             throw new InvalidArgumentException("You must pass a first class callable method of a mocked object.");
         }
-        $expectation = $closureThis->shouldReceive($reflectionClosure->getName());
+        $expectation = new ExpectationBuilder($closureThis->shouldReceive($reflectionClosure->getName()));
         if (empty($withArgs)) {
             return $expectation;
         }

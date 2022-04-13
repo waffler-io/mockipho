@@ -36,7 +36,7 @@ class TestCaseTest extends TestCase
 
         Mockipho::when($this->serviceA->getFoo(...))
             ->twice()
-            ->andReturns('a', 'b');
+            ->thenReturn('a', 'b');
 
         self::assertEquals('a', $this->serviceA->getFoo());
         self::assertEquals('b', $this->serviceA->getFoo());

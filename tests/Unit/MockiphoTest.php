@@ -35,6 +35,7 @@ use Waffler\Mockipho\Tests\Fixtures\FakeServices\ServiceA;
  * @covers \Waffler\Mockipho\Expectations\AnyResource
  * @covers \Waffler\Mockipho\Expectations\AnyString
  * @covers \Waffler\Mockipho\Expectations\AnyValue
+ * @covers \Waffler\Mockipho\ExpectationBuilder
  * @psalm-suppress PropertyNotSetInConstructor
  */
 class MockiphoTest extends TestCase
@@ -54,10 +55,10 @@ class MockiphoTest extends TestCase
     public function itMustCreateTheExpectationForTheGivenClosure(): void
     {
         $expectation = Mockipho::when($this->serviceA->getFoo(...))
-            ->andReturns('it works!');
+            ->thenReturn('it works!');
 
         self::assertInstanceOf(ExpectationInterface::class, $expectation);
-        self::assertNotNull($expectation->mock()
+        self::assertNotNull($expectation->getMock()
             ->mockery_getExpectationsFor('getFoo'));
         self::assertEquals('it works!', $this->serviceA->getFoo());
     }
@@ -71,7 +72,7 @@ class MockiphoTest extends TestCase
     public function itMustAddTheArgumentsExpectationsForTheMethod(): void
     {
         Mockipho::when($this->serviceA->sum(...), 1, 2)
-            ->andReturns(5);
+            ->thenReturn(5);
 
         self::assertEquals(5, $this->serviceA->sum(1, 2));
     }
@@ -357,7 +358,7 @@ class MockiphoTest extends TestCase
     public function itMustMatchTheArgumentToTheTypeExpectation(): void
     {
         Mockipho::when($this->typeExpectation->test(...), Mockipho::anyValue())
-            ->andReturns(true);
+            ->thenReturn(true);
 
         self::assertTrue($this->typeExpectation->test('foo'));
     }

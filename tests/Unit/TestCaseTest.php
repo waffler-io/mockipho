@@ -25,7 +25,7 @@ use Waffler\Mockipho\Tests\Fixtures\FakeServices\ServiceA;
 class TestCaseTest extends TestCase
 {
     #[Mock]
-    private readonly ServiceA $serviceA;
+    private ServiceA $serviceA;
 
     /**
      * @throws \ReflectionException
@@ -34,7 +34,7 @@ class TestCaseTest extends TestCase
     {
         self::assertInstanceOf(MockInterface::class, $this->serviceA);
 
-        Mockipho::when($this->serviceA->getFoo(...))
+        Mockipho::when($this->serviceA->getFoo())
             ->twice()
             ->thenReturn('a', 'b');
 

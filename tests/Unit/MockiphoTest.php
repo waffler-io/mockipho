@@ -9,7 +9,6 @@
 
 namespace Waffler\Mockipho\Tests\Unit;
 
-use InvalidArgumentException;
 use Mockery\Exception\NoMatchingExpectationException;
 use Mockery\ExpectationInterface;
 use stdClass;
@@ -22,29 +21,29 @@ use Waffler\Mockipho\Tests\Fixtures\FakeServices\ServiceA;
 /**
  * Class MockiphoTest.
  *
- * @author ErickJMenezes <erickmenezes.dev@gmail.com>
- * @covers \Waffler\Mockipho\Mockipho
- * @covers \Waffler\Mockipho\Expectations\AnyArray
- * @covers \Waffler\Mockipho\Expectations\AnyBoolean
- * @covers \Waffler\Mockipho\Expectations\AnyDouble
- * @covers \Waffler\Mockipho\Expectations\AnyFloat
- * @covers \Waffler\Mockipho\Expectations\AnyInstanceOf
- * @covers \Waffler\Mockipho\Expectations\AnyInt
- * @covers \Waffler\Mockipho\Expectations\AnyObject
- * @covers \Waffler\Mockipho\Expectations\AnyOf
- * @covers \Waffler\Mockipho\Expectations\AnyResource
- * @covers \Waffler\Mockipho\Expectations\AnyString
- * @covers \Waffler\Mockipho\Expectations\AnyValue
- * @covers \Waffler\Mockipho\ExpectationBuilder
+ * @author         ErickJMenezes <erickmenezes.dev@gmail.com>
+ * @covers         \Waffler\Mockipho\Mockipho
+ * @covers         \Waffler\Mockipho\Expectations\AnyArray
+ * @covers         \Waffler\Mockipho\Expectations\AnyBoolean
+ * @covers         \Waffler\Mockipho\Expectations\AnyDouble
+ * @covers         \Waffler\Mockipho\Expectations\AnyFloat
+ * @covers         \Waffler\Mockipho\Expectations\AnyInstanceOf
+ * @covers         \Waffler\Mockipho\Expectations\AnyInt
+ * @covers         \Waffler\Mockipho\Expectations\AnyObject
+ * @covers         \Waffler\Mockipho\Expectations\AnyOf
+ * @covers         \Waffler\Mockipho\Expectations\AnyResource
+ * @covers         \Waffler\Mockipho\Expectations\AnyString
+ * @covers         \Waffler\Mockipho\Expectations\AnyValue
+ * @covers         \Waffler\Mockipho\ExpectationBuilder
  * @psalm-suppress PropertyNotSetInConstructor
  */
 class MockiphoTest extends TestCase
 {
     #[Mock]
-    private readonly ServiceA $serviceA;
+    private ServiceA $serviceA;
 
     #[Mock]
-    private readonly TypeExpectation $typeExpectation;
+    private TypeExpectation $typeExpectation;
 
     /**
      * @return void
@@ -54,7 +53,7 @@ class MockiphoTest extends TestCase
      */
     public function itMustCreateTheExpectationForTheGivenClosure(): void
     {
-        $expectation = Mockipho::when($this->serviceA->getFoo(...))
+        $expectation = Mockipho::when($this->serviceA->getFoo())
             ->thenReturn('it works!');
 
         self::assertInstanceOf(ExpectationInterface::class, $expectation);
@@ -71,7 +70,7 @@ class MockiphoTest extends TestCase
      */
     public function itMustAddTheArgumentsExpectationsForTheMethod(): void
     {
-        Mockipho::when($this->serviceA->sum(...), 1, 2)
+        Mockipho::when($this->serviceA->sum(1, 2))
             ->thenReturn(5);
 
         self::assertEquals(5, $this->serviceA->sum(1, 2));
@@ -86,23 +85,9 @@ class MockiphoTest extends TestCase
     public function itMustRejectTheArgumentsWhenTheExpectedValueIsNotGiven(): void
     {
         self::expectException(NoMatchingExpectationException::class);
-        Mockipho::when($this->serviceA->sum(...), Mockipho::anyString(), 2)
-            ->andReturns(5);
+        Mockipho::when($this->serviceA->sum(Mockipho::anyString(), 2))
+            ->thenReturn(5);
         self::assertEquals(5, $this->serviceA->sum(1, 2));
-    }
-
-    /**
-     * @return void
-     * @throws \ReflectionException
-     * @throws \InvalidArgumentException
-     * @author ErickJMenezes <erickmenezes.dev@gmail.com>
-     * @test
-     */
-    public function itMustThrowAnExceptionWhenTheGivenClosureIsNotAnMockedFirstClassCallable(): void
-    {
-        self::expectException(InvalidArgumentException::class);
-
-        Mockipho::when(fn() => null);
     }
 
     /**
@@ -357,7 +342,7 @@ class MockiphoTest extends TestCase
      */
     public function itMustMatchTheArgumentToTheTypeExpectation(): void
     {
-        Mockipho::when($this->typeExpectation->test(...), Mockipho::anyValue())
+        Mockipho::when($this->typeExpectation->test(Mockipho::anyValue()))
             ->thenReturn(true);
 
         self::assertTrue($this->typeExpectation->test('foo'));

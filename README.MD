@@ -19,8 +19,8 @@ class SomeTest extends \Waffler\Mockipho\TestCase
 
     public function testSomething()
     {
-        when($this->fooMock->bar(...), anyString(), anyInt())
-            ->andReturn('it works!');
+        when($this->fooMock->bar(anyString(), anyInt()))
+            ->thenReturn('it works!');
             
         self::assertEquals('it works!', $this->fooMock->bar('foo', 1)); // [OK] passed.
     }

@@ -19,7 +19,7 @@ namespace Waffler\Mockipho\Expectations;
 class AnyOf implements TypeExpectation
 {
     public function __construct(
-        private readonly array $possibilities,
+        private array $possibilities,
     ) {}
 
     public function test(mixed $value): bool

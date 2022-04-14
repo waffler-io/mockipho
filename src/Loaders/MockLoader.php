@@ -22,7 +22,6 @@ use Waffler\Mockipho\MethodCall;
 use Waffler\Mockipho\Mock;
 use Waffler\Mockipho\TestCase;
 use WeakMap;
-use ZEngine\Core;
 
 /**
  * Class MockLoader.
@@ -33,16 +32,10 @@ class MockLoader
 {
     private WeakMap $mocks;
 
-    public static bool $developing = false;
-
     public function __construct()
     {
         /** @psalm-suppress PropertyTypeCoercion */
         $this->mocks = new WeakMap();
-
-        if (empty(Core::$compiler)) {
-            Core::init();
-        }
     }
 
     public function load(object $object): void
@@ -118,7 +111,7 @@ class MockLoader
 
             public function __call(string $name, array $arguments): mixed
             {
-                if (is_a($this->getCallerClass(), TestCase::class, true)) {
+                if ($this->calledFromTestCase()) {
                     if ($this->isMethodOfMockery($name)) {
                         return $this->mockeryBaseMock->$name(...$arguments);
                     }
@@ -142,12 +135,10 @@ class MockLoader
                 $this->mockeryBaseMock->$name = $value;
             }
 
-            private function getCallerClass(): ?string
+            private function calledFromTestCase(): bool
             {
                 $debugBacktrace = debug_backtrace(limit: 4);
-                return $debugBacktrace[2]['class']
-                    ?? $debugBacktrace[3]['class']
-                    ?? null;
+                return is_a($debugBacktrace[2]['class'] ?? '', TestCase::class, true);
             }
 
             private function isMethodOfMockery(string $method): bool

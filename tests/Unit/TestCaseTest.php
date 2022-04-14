@@ -30,9 +30,6 @@ class TestCaseTest extends TestCase
     #[Mock]
     private ServiceA $serviceA;
 
-    /**
-     * @throws \ReflectionException
-     */
     public function testItShouldMockTheServiceA(): void
     {
         self::assertInstanceOf(MockInterface::class, $this->serviceA);

@@ -20,8 +20,8 @@ use RuntimeException;
 class IllegalPropertyException extends RuntimeException
 {
     public function __construct(
-        public readonly ReflectionProperty $property,
-        public readonly string $reason = '',
+        public ReflectionProperty $property,
+        public string $reason = '',
     ) {
         parent::__construct("The property {$property->getName()} is not illegal. $reason");
     }

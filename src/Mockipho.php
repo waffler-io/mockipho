@@ -11,10 +11,7 @@ declare(strict_types = 1);
 
 namespace Waffler\Mockipho;
 
-use Closure;
 use InvalidArgumentException;
-use Mockery\MockInterface;
-use ReflectionFunction;
 use Waffler\Mockipho\Expectations\AnyArray;
 use Waffler\Mockipho\Expectations\AnyBoolean;
 use Waffler\Mockipho\Expectations\AnyDouble;
@@ -38,28 +35,25 @@ class Mockipho
     /**
      * Defines an expectation for a method call.
      *
-     * @param \Closure $methodIsCalled
-     * @param mixed    ...$withArgs
+     * @param mixed $methodCall
      *
      * @return \Waffler\Mockipho\ExpectationBuilder
-     * @throws \ReflectionException
      * @author         ErickJMenezes <erickmenezes.dev@gmail.com>
      * @psalm-suppress DuplicateFunction
      */
-    public static function when(Closure $methodIsCalled, mixed ...$withArgs): ExpectationBuilder
+    public static function when(mixed $methodCall): ExpectationBuilder
     {
-        $reflectionClosure = new ReflectionFunction($methodIsCalled);
-        $closureThis = $reflectionClosure->getClosureThis();
-        if (!$closureThis instanceof MockInterface) {
-            throw new InvalidArgumentException("You must pass a first class callable method of a mocked object.");
+        if (!$methodCall instanceof MethodCall) {
+            throw new InvalidArgumentException("The argument must be the method call of a mock.");
         }
-        $expectation = new ExpectationBuilder($closureThis->shouldReceive($reflectionClosure->getName()));
-        if (empty($withArgs)) {
+
+        $expectation = new ExpectationBuilder($methodCall->mock->shouldReceive($methodCall->method));
+        if (empty($methodCall->arguments)) {
             return $expectation;
         }
-        return $expectation->withArgs(function (mixed ...$args) use ($withArgs) {
+        return $expectation->withArgs(function (mixed ...$args) use ($methodCall) {
             $valid = true;
-            foreach ($withArgs as $index => $expectedArg) {
+            foreach ($methodCall->arguments as $index => $expectedArg) {
                 if (!$valid) {
                     break;
                 } elseif ($expectedArg instanceof TypeExpectation) {

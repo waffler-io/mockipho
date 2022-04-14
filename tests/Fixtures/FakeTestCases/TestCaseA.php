@@ -20,7 +20,7 @@ use Waffler\Mockipho\Tests\Fixtures\FakeServices\ServiceA;
 class TestCaseA
 {
     #[Mock]
-    public readonly ServiceA $serviceA;
+    public ServiceA $serviceA;
 
-    public readonly ServiceA $serviceB;
+    public ServiceA $serviceB;
 }

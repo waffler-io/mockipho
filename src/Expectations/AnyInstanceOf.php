@@ -23,7 +23,7 @@ class AnyInstanceOf implements TypeExpectation
      * @psalm-param class-string $classString
      */
     public function __construct(
-        public readonly string $classString,
+        public string $classString,
     ) {}
 
     public function test(mixed $value): bool

@@ -24,21 +24,24 @@ use Waffler\Mockipho\Tests\Fixtures\FakeServices\ServiceA;
  */
 class TestCaseTest extends TestCase
 {
-    #[Mock]
-    private readonly ServiceA $serviceA;
-
     /**
-     * @throws \ReflectionException
+     * @var \Waffler\Mockipho\Tests\Fixtures\FakeServices\ServiceA&MockInterface
      */
+    #[Mock]
+    private ServiceA $serviceA;
+
     public function testItShouldMockTheServiceA(): void
     {
         self::assertInstanceOf(MockInterface::class, $this->serviceA);
 
-        Mockipho::when($this->serviceA->getFoo(...))
+        Mockipho::when($this->serviceA->getFoo())
             ->twice()
             ->thenReturn('a', 'b');
 
-        self::assertEquals('a', $this->serviceA->getFoo());
-        self::assertEquals('b', $this->serviceA->getFoo());
+        $expectationDirector = $this->serviceA->mockery_getExpectationsFor('getFoo');
+
+        self::assertNotNull($expectationDirector);
+        self::assertEquals('a', $expectationDirector->call([]));
+        self::assertEquals('b', $expectationDirector->call([]));
     }
 }

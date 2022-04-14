@@ -7,8 +7,7 @@
             "Waffler\\Mockipho\\": "src/"
         },
         "files": [
-            "functions.php",
-            "bootstrap_core.php"
+            "functions.php"
         ]
     },
     "autoload-dev": {

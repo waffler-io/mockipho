@@ -28,7 +28,8 @@ class ExpectationBuilder implements ExpectationInterface
 {
     public function __construct(
         private ExpectationInterface|CompositeExpectation|Expectation|VerificationExpectation $expectation
-    ) {}
+    ) {
+    }
 
     public function getOrderNumber(): int|null
     {

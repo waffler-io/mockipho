@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * This file is part of Waffler\Mockipho.
@@ -107,7 +107,8 @@ class MockLoader
         return new class ($mock) {
             public function __construct(
                 public MockInterface|HigherOrderMessage|LegacyMockInterface $mockeryBaseMock
-            ) {}
+            ) {
+            }
 
             public function __call(string $name, array $arguments): mixed
             {

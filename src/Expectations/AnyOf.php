@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * This file is part of Waffler\Mockipho.
@@ -20,7 +20,8 @@ class AnyOf implements TypeExpectation
 {
     public function __construct(
         private array $possibilities,
-    ) {}
+    ) {
+    }
 
     public function test(mixed $value): bool
     {

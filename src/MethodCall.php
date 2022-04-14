@@ -24,5 +24,6 @@ class MethodCall
         public MockInterface|LegacyMockInterface|HigherOrderMessage $mock,
         public string $method,
         public array $arguments = [],
-    ) {}
+    ) {
+    }
 }

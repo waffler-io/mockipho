@@ -36,3 +36,16 @@ class SomeTest extends \Waffler\Mockipho\TestCase
     }
 }
 ```
+
+If you want to use this package, pleas add the autoloader of this package to your
+phpunit.xml file. This autoloader is located at `vendor/waffler/mockipho/autoload.php`.
+
+This custom autoloader loads a special class that is required by this package.
+
+## In phpunit.xml
+Add the bootstrap file to your phpunit.xml file.
+```xml
+<phpunit bootstrap="./vendor/waffler/mockipho/autoload.php">
+    ...
+</phpunit>
+```

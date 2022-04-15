@@ -18,7 +18,6 @@ use Mockery\MockInterface;
 use ReflectionNamedType;
 use Waffler\Mockipho\Exceptions\IllegalPropertyException;
 use Waffler\Mockipho\Mock;
-use WeakMap;
 use ZEngine\Reflection\ReflectionClass;
 
 /**
@@ -65,11 +64,12 @@ class MockLoader
     private function createMockFor(string $target): object
     {
         $targetReflection = new ReflectionClass($target);
-        if ($targetReflection->isFinal()) {
-            $targetReflection->setFinal(false);
-        }
-
-        $baseMock = Mockery::mock($target);
+        $baseMock = Mockery::mock(
+            $targetReflection->isFinal()
+                ? $targetReflection->newInstanceWithoutConstructor()
+                : $target
+        );
+        $targetReflection->setFinal(false);
         $mock = $this->createMockProxy($baseMock, $targetReflection->isInterface() ? null : $target);
         $mockProxyReflection = new ReflectionClass($mock);
 

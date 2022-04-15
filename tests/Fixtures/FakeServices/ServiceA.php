@@ -30,9 +30,4 @@ final class ServiceA
     {
         return $value;
     }
-
-    public function multipleArgumentsDummy(mixed $arg1, mixed $arg2, mixed $arg3): array
-    {
-        return [$arg1, $arg2, $arg3];
-    }
 }

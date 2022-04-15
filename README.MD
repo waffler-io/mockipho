@@ -142,10 +142,10 @@ the following command:
 # Change the "--version" command with whatever you want to run.
 
 # To use the php cli:
-docker-compose exec php --version
+docker-compose run php --version
 
 # To use the composer cli:
-docker-compose exec php composer --version
+docker-compose run php composer --version
 ```
 
 > **Note:** If you use PHPStorm or another IDE capable of integrate with docker, 

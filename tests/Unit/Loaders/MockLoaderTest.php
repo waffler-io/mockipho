@@ -54,23 +54,6 @@ class MockLoaderTest extends TestCase
      * @author ErickJMenezes <erickmenezes.dev@gmail.com>
      * @test
      */
-    public function itMustGetTheMockFromTheCacheIfTheMockIsAlreadyGenerated(): void
-    {
-        $objectA = new TestCaseA();
-        $this->mockLoader->load($objectA);
-        $objectB = new TestCaseA();
-        $this->mockLoader->load($objectB);
-        self::assertTrue(isset($objectA->serviceA), "The objectA mock is not set.");
-        self::assertTrue(isset($objectB->serviceA), "The objectB mock is not set.");
-        self::assertTrue(!isset($objectA->serviceB), "The objectA mock is set.");
-        self::assertSame($objectA->serviceA, $objectB->serviceA);
-    }
-
-    /**
-     * @return void
-     * @author ErickJMenezes <erickmenezes.dev@gmail.com>
-     * @test
-     */
     public function itMustThrowIllegalPropertyExceptionIfTheMockHasNoTypeAnnotation(): void
     {
         $this->expectException(IllegalPropertyException::class);

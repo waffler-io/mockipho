@@ -64,8 +64,7 @@ class MockiphoTest extends TestCase
             ->thenReturn('it works!');
 
         self::assertInstanceOf(ExpectationInterface::class, $expectation);
-        $expectationDirector = $expectation->getMock()
-            ->mockery_getExpectationsFor('getFoo');
+        $expectationDirector = $expectation->getMock()->mockery_getExpectationsFor('getFoo');
         self::assertNotNull($expectationDirector);
         self::assertEquals('it works!', $expectationDirector->call([]));
     }
@@ -207,7 +206,7 @@ class MockiphoTest extends TestCase
     public function itMustReturnTrueWhenTheArgumentIsInstanceOf(): void
     {
         $expectationMatcher = Mockipho::anyInstanceOf(ServiceA::class);
-        self::assertTrue($expectationMatcher->test(new ServiceA()));
+        self::assertTrue($expectationMatcher->test(new ServiceA(1)));
     }
 
     /**

@@ -144,7 +144,7 @@ function anyString(): TypeExpectation
 }
 
 /**
- * Expects the given parameter to be ay value.
+ * Expects the given parameter to be any value.
  *
  * @return \Waffler\Mockipho\Expectations\TypeExpectation
  * @author ErickJMenezes <erickmenezes.dev@gmail.com>
@@ -152,4 +152,15 @@ function anyString(): TypeExpectation
 function anyValue(): TypeExpectation
 {
     return Mockipho::anyValue();
+}
+
+/**
+ * Expects the given parameter to be any callable.
+ *
+ * @return \Waffler\Mockipho\Expectations\TypeExpectation
+ * @author ErickJMenezes <erickmenezes.dev@gmail.com>
+ */
+function anyCallable(): TypeExpectation
+{
+    return Mockipho::anyCallable();
 }

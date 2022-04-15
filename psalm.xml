@@ -11,6 +11,8 @@
         <directory name="tests/Unit"/>
         <ignoreFiles>
             <directory name="vendor"/>
+            <file name="functions.php"/>
+            <file name="autoload.php"/>
         </ignoreFiles>
     </projectFiles>
 </psalm>

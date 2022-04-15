@@ -345,6 +345,17 @@ class MockiphoTest extends TestCase
 
     /**
      * @return void
+     * @author ErickJMenezes <erickmenezes.dev@gmail.com>
+     * @test
+     */
+    public function itMustReturnTrueIfIsGivenAnyCallable(): void
+    {
+        $expectationMatcher = Mockipho::anyCallable();
+        self::assertTrue($expectationMatcher->test(fn () => null));
+    }
+
+    /**
+     * @return void
      * @throws \ReflectionException
      * @author ErickJMenezes <erickmenezes.dev@gmail.com>
      * @test

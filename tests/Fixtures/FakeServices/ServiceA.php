@@ -13,7 +13,8 @@ final class ServiceA
 {
     public function __construct(
         private int $foo,
-    ) {}
+    ) {
+    }
 
     public function getFoo(): string
     {

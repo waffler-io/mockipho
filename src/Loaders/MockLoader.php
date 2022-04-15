@@ -65,16 +65,19 @@ class MockLoader
     private function createMockFor(string $target): object
     {
         $targetReflection = new ReflectionClass($target);
-        $targetReflection->setFinal(false);
+        if ($targetReflection->isFinal()) {
+            $targetReflection->setFinal(false);
+        }
 
-        $mock = $this->createMockProxy(Mockery::mock($target), $targetReflection->isInterface() ? null : $target);
+        $baseMock = Mockery::mock($target);
+        $mock = $this->createMockProxy($baseMock, $targetReflection->isInterface() ? null : $target);
         $mockProxyReflection = new ReflectionClass($mock);
 
         if ($targetReflection->isInterface()) {
             $mockProxyReflection->addInterfaces($target);
         } else {
             foreach ($mockProxyReflection->getMethods(\ReflectionMethod::IS_PUBLIC) as $reflectionMethod) {
-                if (in_array($reflectionMethod->getName(), ['__call', '__construct'])) {
+                if (in_array($reflectionMethod->getName(), ['__call', '__construct'], true)) {
                     continue;
                 }
                 $mockProxyReflection->removeMethods($reflectionMethod->getName());

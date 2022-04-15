@@ -14,6 +14,7 @@ namespace Waffler\Mockipho;
 use InvalidArgumentException;
 use Waffler\Mockipho\Expectations\AnyArray;
 use Waffler\Mockipho\Expectations\AnyBoolean;
+use Waffler\Mockipho\Expectations\AnyCallable;
 use Waffler\Mockipho\Expectations\AnyDouble;
 use Waffler\Mockipho\Expectations\AnyFloat;
 use Waffler\Mockipho\Expectations\AnyInstanceOf;
@@ -126,5 +127,10 @@ class Mockipho
     public static function anyArray(): TypeExpectation
     {
         return new AnyArray();
+    }
+
+    public static function anyCallable(): TypeExpectation
+    {
+        return new AnyCallable();
     }
 }

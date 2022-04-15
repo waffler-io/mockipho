@@ -80,17 +80,18 @@ when($foo->bar())
     ->thenReturn('it works!');
 ```
 
-If your method expect some parameters, you can pass them to the `when()` function.
+If your method expect some parameters, you can pass the arguments to the method you are calling.
 
 ```php
 when($foo->bar('hello', 42))
     ->thenReturn('it works!');
 ```
 
-If your method expect an arbitrary number of parameters, you can use the `any**()` functions.
+If you want to say that your method expect "any" value of a specific type 
+then you can use the `any**()` functions.
 
 ```php
-when($foo->bar(anyString(), 42))
+when($foo->bar(anyString(), 42)) // the first argument can be any string
     ->thenReturn('it works!');
 ```
 

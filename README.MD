@@ -1,7 +1,8 @@
 # Mockipho
 
-Mockipho is a wrapper around mockery that allows you to create mocks with brand new php 8 annotations, in a way similar
-to Java Mockito. Take a look in the example below.
+Mockipho is a wrapper around mockery that allows you to create mock objects integrated
+with phpunit.
+It's very similar to Java Mockito so take a look in the example below.
 
 ```php
 <?php
@@ -17,19 +18,20 @@ class SomeTest extends \Waffler\Mockipho\TestCase
     #[Mock]
     private Foo $fooMock;
     
-    // Some class that uses the mock
+    // This class uses the Foo mock object
     private SomeClass $someClass;
     
     protected function setUp() : void
     {
         parent::setUp();
-        // Giving a mock to the class as dependency injection
+        // Giving the mock to the class as a dependency injection
         $this->someClass = new SomeClass($this->fooMock);
     }
 
     public function testSomething(): void
     {
-        // It doesn't matter the bar() method parameter types. Everything just works.
+        // It doesn't matter the argument types of the bar() method. Your IDE should
+        // warn you about invalid arguments types, so don't worry about it.
         when($this->fooMock->bar(anyString(), anyInt()))
             ->thenReturn('it works!');
 
@@ -66,7 +68,7 @@ class MyClassTest extends TestCase // Use the custom TestCase
 {}
 ```
 
-In your test cases, you can use the `#[Mock]` annotation to inject mocks inside your TestCases.
+Use the `#[Mock]` annotation/attribute to mark the properties that you want to mock.
 ```php
 #[Mock]
 private Foo $foo;
@@ -76,6 +78,8 @@ private Foo $foo;
 In your test case methods, you can use the `when()` function to create expectations.
 
 ```php
+use function Waffler\Mockipho\{when};
+
 when($foo->bar())
     ->thenReturn('it works!');
 ```
@@ -95,7 +99,7 @@ when($foo->bar(anyString(), 42)) // the first argument can be any string
     ->thenReturn('it works!');
 ```
 
-All `any**()` functions are available in the `Waffler\Mockipho` namespace, you can inport them like this:
+All functions are available in the `Waffler\Mockipho` namespace, you can import them like this:
 
 ```php
 use function Waffler\Mockipho\{anyString, anyInt};
@@ -113,8 +117,9 @@ Mockipho::when($foo->bar(Mockipho::anyString(), Mockipho::anyInt()))
 > **Important**: Don't worry about your class parameters types when using the `any**()` functions
 > because this package will automatically convert them to the right type.
 
-### 4 - The complete list of `any**()` functions
+### 4 - The complete list of functions
 ```php
+when();
 anyArray();
 anyBoolean();
 anyDouble();

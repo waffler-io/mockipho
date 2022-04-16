@@ -54,7 +54,8 @@ This custom autoloader loads a special class that is required by this package.
 ### 0 - Installing this package
 This package is not available on composer. You need to install it manually.
 The easies way is adding this repository as a vcs repository in your composer.json and
-add the dependency in the `require-dev` section, and finally run `composer update`.
+add the dependency in the `require-dev` section. After that, just run `composer update`
+and the package should be installed.
 
 ```json
 {

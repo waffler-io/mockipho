@@ -1,6 +1,7 @@
 {
     "name": "waffler/mockipho",
     "type": "library",
+    "description": "Mock library for PHPUnit",
     "license": "MIT",
     "autoload": {
         "psr-4": {

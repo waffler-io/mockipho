@@ -1,5 +1,9 @@
 # Mockipho
 
+> **NOTE** This is a proof of concept. It is not intended to be used in production.
+> If you want to use it, please make sure you understand the risks.
+
+
 Mockipho is a wrapper around mockery that allows you to create mock objects integrated
 with phpunit.
 It's very similar to Java Mockito so take a look in the example below.
@@ -46,6 +50,26 @@ phpunit.xml file. This autoloader is located at `vendor/waffler/mockipho/autoloa
 This custom autoloader loads a special class that is required by this package.
 
 ## How to use this package
+
+### 0 - Installing this package
+This package is not available on composer. You need to install it manually.
+The easies way is adding this repository as a vcs repository in your composer.json and
+in the `require-dev` section, and finally run `composer update`.
+
+```json
+{
+    "require-dev": {
+        "waffler/mockipho": "dev-master"
+    },
+    "repositories": [
+      {
+        "type": "vcs",
+        "url": "https://github.com/waffler-io/mockipho"
+      }
+    ]
+}
+```
+
 
 ### 1 - Configuring the autoloader in your phpunit.xml file
 

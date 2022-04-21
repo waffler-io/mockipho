@@ -9,14 +9,22 @@ declare(strict_types=1);
  * with this source code in the file LICENCE.
  */
 
-namespace Waffler\Mockipho\Expectations;
+namespace Waffler\Mockipho\Matchers;
 
 /**
  * Interface TypeExpectation.
  *
  * @author ErickJMenezes <erickmenezes.dev@gmail.com>
  */
-interface TypeExpectation
+interface Matcher
 {
-    public function test(mixed $value): bool;
+    /**
+     * Runs the value against the matcher.
+     *
+     * @param mixed $value
+     *
+     * @return bool
+     * @author ErickJMenezes <erickmenezes.dev@gmail.com>
+     */
+    public function matches(mixed $value): bool;
 }

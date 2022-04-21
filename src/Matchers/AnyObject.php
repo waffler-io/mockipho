@@ -9,17 +9,17 @@ declare(strict_types=1);
  * with this source code in the file LICENCE.
  */
 
-namespace Waffler\Mockipho\Expectations;
+namespace Waffler\Mockipho\Matchers;
 
 /**
- * Class AnyBoolean.
+ * Class AnyObject.
  *
  * @author ErickJMenezes <erickmenezes.dev@gmail.com>
  */
-class AnyBoolean implements TypeExpectation
+class AnyObject implements Matcher
 {
-    public function test(mixed $value): bool
+    public function matches(mixed $value): bool
     {
-        return is_bool($value);
+        return is_object($value);
     }
 }

@@ -12,19 +12,19 @@ declare(strict_types=1);
 namespace Waffler\Mockipho;
 
 use InvalidArgumentException;
-use Waffler\Mockipho\Expectations\AnyArray;
-use Waffler\Mockipho\Expectations\AnyBoolean;
-use Waffler\Mockipho\Expectations\AnyCallable;
-use Waffler\Mockipho\Expectations\AnyDouble;
-use Waffler\Mockipho\Expectations\AnyFloat;
-use Waffler\Mockipho\Expectations\AnyInstanceOf;
-use Waffler\Mockipho\Expectations\AnyInt;
-use Waffler\Mockipho\Expectations\AnyObject;
-use Waffler\Mockipho\Expectations\AnyOf;
-use Waffler\Mockipho\Expectations\AnyResource;
-use Waffler\Mockipho\Expectations\AnyString;
-use Waffler\Mockipho\Expectations\AnyValue;
-use Waffler\Mockipho\Expectations\TypeExpectation;
+use Waffler\Mockipho\Matchers\AnyArray;
+use Waffler\Mockipho\Matchers\AnyBoolean;
+use Waffler\Mockipho\Matchers\AnyCallable;
+use Waffler\Mockipho\Matchers\AnyDouble;
+use Waffler\Mockipho\Matchers\AnyFloat;
+use Waffler\Mockipho\Matchers\AnyInstanceOf;
+use Waffler\Mockipho\Matchers\AnyInt;
+use Waffler\Mockipho\Matchers\AnyObject;
+use Waffler\Mockipho\Matchers\AnyOf;
+use Waffler\Mockipho\Matchers\AnyResource;
+use Waffler\Mockipho\Matchers\AnyString;
+use Waffler\Mockipho\Matchers\AnyValue;
+use Waffler\Mockipho\Matchers\Matcher;
 
 /**
  * Class Mockipho.
@@ -52,13 +52,13 @@ class Mockipho
         if (empty($methodCall->arguments)) {
             return $expectation;
         }
-        return $expectation->withArgs(function (mixed ...$args) use ($methodCall) {
+        return $expectation->withArgs(function (mixed ...$args) use (&$methodCall) {
             $valid = true;
             foreach ($methodCall->arguments as $index => $expectedArg) {
                 if (!$valid) {
                     break;
-                } elseif ($expectedArg instanceof TypeExpectation) {
-                    $valid = $expectedArg->test($args[$index]);
+                } elseif ($expectedArg instanceof Matcher || $expectedArg instanceof \Hamcrest\Matcher) {
+                    $valid = $expectedArg->matches($args[$index]);
                 } else {
                     $valid = $args[$index] === $expectedArg;
                 }
@@ -67,69 +67,70 @@ class Mockipho
         });
     }
 
-    public static function anyString(): TypeExpectation
+    public static function anyString(): Matcher
     {
         return new AnyString();
     }
 
-    public static function anyInt(): TypeExpectation
+    public static function anyInt(): Matcher
     {
         return new AnyInt();
     }
 
-    public static function anyValue(): TypeExpectation
+    public static function anyValue(): Matcher
     {
         return new AnyValue();
     }
 
-    public static function anyOf(array $possibilities): TypeExpectation
+    public static function anyOf(array $possibilities): Matcher
     {
         return new AnyOf($possibilities);
     }
 
-    public static function anyBoolean(): TypeExpectation
+    public static function anyBoolean(): Matcher
     {
         return new AnyBoolean();
     }
 
-    public static function anyFloat(): TypeExpectation
+    public static function anyFloat(): Matcher
     {
         return new AnyFloat();
     }
 
-    public static function anyDouble(): TypeExpectation
+    public static function anyDouble(): Matcher
     {
         return new AnyDouble();
     }
 
-    public static function anyResource(): TypeExpectation
+    public static function anyResource(): Matcher
     {
         return new AnyResource();
     }
 
-    public static function anyObject(): TypeExpectation
+    public static function anyObject(): Matcher
     {
         return new AnyObject();
     }
 
     /**
      * @param string $classString
+     *
      * @psalm-param class-string $classString
      *
-     * @return \Waffler\Mockipho\Expectations\TypeExpectation
+     * @return \Waffler\Mockipho\Matchers\Matcher
      * @author ErickJMenezes <erickmenezes.dev@gmail.com>
      */
-    public static function anyInstanceOf(string $classString): TypeExpectation
+    public static function anyInstanceOf(string $classString): Matcher
     {
         return new AnyInstanceOf($classString);
     }
 
-    public static function anyArray(): TypeExpectation
+    public static function anyArray(): Matcher
     {
         return new AnyArray();
     }
 
-    public static function anyCallable(): TypeExpectation
+    public static function anyCallable(): Matcher
     {
         return new AnyCallable();
     }

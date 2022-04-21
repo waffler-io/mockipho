@@ -9,24 +9,24 @@ declare(strict_types=1);
  * with this source code in the file LICENCE.
  */
 
-namespace Waffler\Mockipho\Expectations;
+namespace Waffler\Mockipho\Matchers;
 
 /**
  * Class AnyOf.
  *
  * @author ErickJMenezes <erickmenezes.dev@gmail.com>
  */
-class AnyOf implements TypeExpectation
+class AnyOf implements Matcher
 {
     public function __construct(
         private array $possibilities,
     ) {
     }
 
-    public function test(mixed $value): bool
+    public function matches(mixed $value): bool
     {
         foreach ($this->possibilities as $possibility) {
-            if ($possibility instanceof TypeExpectation && $possibility->test($value)) {
+            if ($possibility instanceof Matcher && $possibility->matches($value)) {
                 return true;
             } elseif ($possibility === $value) {
                 return true;

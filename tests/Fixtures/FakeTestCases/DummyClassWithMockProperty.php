@@ -10,17 +10,25 @@
 namespace Waffler\Mockipho\Tests\Fixtures\FakeTestCases;
 
 use Waffler\Mockipho\Mock;
-use Waffler\Mockipho\Tests\Fixtures\FakeServices\ServiceA;
+use Waffler\Mockipho\Tests\Fixtures\FakeServices\FakeServiceInterface;
 
 /**
  * Class TestCaseA.
  *
  * @author ErickJMenezes <erickmenezes.dev@gmail.com>
  */
-class TestCaseA
+class DummyClassWithMockProperty
 {
+    /**
+     * @var \Waffler\Mockipho\Tests\Fixtures\FakeServices\FakeServiceInterface&\Mockery\MockInterface
+     */
     #[Mock]
-    public ServiceA $serviceA;
+    public FakeServiceInterface $fakeService;
 
-    public ServiceA $serviceB;
+    public FakeServiceInterface $ignore;
+
+    public function getFoo(): string
+    {
+        return $this->fakeService->getFoo();
+    }
 }

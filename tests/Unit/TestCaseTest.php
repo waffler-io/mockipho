@@ -13,7 +13,7 @@ use Mockery\MockInterface;
 use Waffler\Mockipho\Mock;
 use Waffler\Mockipho\Mockipho;
 use Waffler\Mockipho\TestCase;
-use Waffler\Mockipho\Tests\Fixtures\FakeServices\ServiceA;
+use Waffler\Mockipho\Tests\Fixtures\FakeServices\FakeServiceInterface;
 
 /**
  * Class MockiphoPhpUnitIntegrationTest.
@@ -25,23 +25,15 @@ use Waffler\Mockipho\Tests\Fixtures\FakeServices\ServiceA;
 class TestCaseTest extends TestCase
 {
     /**
-     * @var \Waffler\Mockipho\Tests\Fixtures\FakeServices\ServiceA&MockInterface
+     * @var \Waffler\Mockipho\Tests\Fixtures\FakeServices\FakeServiceInterface&MockInterface
      */
     #[Mock]
-    private ServiceA $serviceA;
+    private FakeServiceInterface $fakeService;
 
-    public function testItShouldMockTheServiceA(): void
+    public function testItMustLoadTheMockInTheProperty(): void
     {
-        self::assertInstanceOf(MockInterface::class, $this->serviceA);
-
-        Mockipho::when($this->serviceA->getFoo())
-            ->twice()
-            ->thenReturn('a', 'b');
-
-        $expectationDirector = $this->serviceA->mockery_getExpectationsFor('getFoo');
-
-        self::assertNotNull($expectationDirector);
-        self::assertEquals('a', $expectationDirector->call([]));
-        self::assertEquals('b', $expectationDirector->call([]));
+        self::assertTrue(isset($this->fakeService), 'The mock is not set');
+        self::assertInstanceOf(MockInterface::class, $this->fakeService);
+        self::assertInstanceOf(FakeServiceInterface::class, $this->fakeService);
     }
 }

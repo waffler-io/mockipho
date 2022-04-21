@@ -21,14 +21,12 @@ use Waffler\Mockipho\Loaders\MockLoader;
  */
 class TestCase extends MockeryTestCase
 {
+    private MockLoader $mockLoader;
+
     protected function setUp(): void
     {
         parent::setUp();
-        $this->loadMockiphoMocks();
-    }
-
-    private function loadMockiphoMocks(): void
-    {
-        (new MockLoader())->load($this);
+        $this->mockLoader = new MockLoader();
+        $this->mockLoader->load($this);
     }
 }

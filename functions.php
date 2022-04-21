@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Waffler\Mockipho;
 
-use Waffler\Mockipho\Expectations\TypeExpectation;
+use Waffler\Mockipho\Matchers\Matcher;
 
 /**
  * Defines an expectation for a method call.
@@ -30,10 +30,10 @@ function when(mixed $methodCall): ExpectationBuilder
 /**
  * Expects the given parameter to be an array.
  *
- * @return \Waffler\Mockipho\Expectations\TypeExpectation
+ * @return \Waffler\Mockipho\Matchers\Matcher
  * @author ErickJMenezes <erickmenezes.dev@gmail.com>
  */
-function anyArray(): TypeExpectation
+function anyArray(): Matcher
 {
     return Mockipho::anyArray();
 }
@@ -41,10 +41,10 @@ function anyArray(): TypeExpectation
 /**
  * Expects the given parameter to be an boolean.
  *
- * @return \Waffler\Mockipho\Expectations\TypeExpectation
+ * @return \Waffler\Mockipho\Matchers\Matcher
  * @author ErickJMenezes <erickmenezes.dev@gmail.com>
  */
-function anyBoolean(): TypeExpectation
+function anyBoolean(): Matcher
 {
     return Mockipho::anyBoolean();
 }
@@ -52,10 +52,10 @@ function anyBoolean(): TypeExpectation
 /**
  * Expects the given parameter to be a double.
  *
- * @return \Waffler\Mockipho\Expectations\TypeExpectation
+ * @return \Waffler\Mockipho\Matchers\Matcher
  * @author ErickJMenezes <erickmenezes.dev@gmail.com>
  */
-function anyDouble(): TypeExpectation
+function anyDouble(): Matcher
 {
     return Mockipho::anyDouble();
 }
@@ -63,10 +63,10 @@ function anyDouble(): TypeExpectation
 /**
  * Expects the given parameter to be a float.
  *
- * @return \Waffler\Mockipho\Expectations\TypeExpectation
+ * @return \Waffler\Mockipho\Matchers\Matcher
  * @author ErickJMenezes <erickmenezes.dev@gmail.com>
  */
-function anyFloat(): TypeExpectation
+function anyFloat(): Matcher
 {
     return Mockipho::anyFloat();
 }
@@ -78,10 +78,10 @@ function anyFloat(): TypeExpectation
  *
  * @psalm-param class-string $classString
  *
- * @return \Waffler\Mockipho\Expectations\TypeExpectation
+ * @return \Waffler\Mockipho\Matchers\Matcher
  * @author ErickJMenezes <erickmenezes.dev@gmail.com>
  */
-function anyInstanceOf(string $classString): TypeExpectation
+function anyInstanceOf(string $classString): Matcher
 {
     return Mockipho::anyInstanceOf($classString);
 }
@@ -89,10 +89,10 @@ function anyInstanceOf(string $classString): TypeExpectation
 /**
  * Expects the given parameter to be an integer.
  *
- * @return \Waffler\Mockipho\Expectations\TypeExpectation
+ * @return \Waffler\Mockipho\Matchers\Matcher
  * @author ErickJMenezes <erickmenezes.dev@gmail.com>
  */
-function anyInt(): TypeExpectation
+function anyInt(): Matcher
 {
     return Mockipho::anyInt();
 }
@@ -100,10 +100,10 @@ function anyInt(): TypeExpectation
 /**
  * Expects the given parameter to be an object.
  *
- * @return \Waffler\Mockipho\Expectations\TypeExpectation
+ * @return \Waffler\Mockipho\Matchers\Matcher
  * @author ErickJMenezes <erickmenezes.dev@gmail.com>
  */
-function anyObject(): TypeExpectation
+function anyObject(): Matcher
 {
     return Mockipho::anyObject();
 }
@@ -113,10 +113,10 @@ function anyObject(): TypeExpectation
  *
  * @param array $possibilities
  *
- * @return \Waffler\Mockipho\Expectations\TypeExpectation
+ * @return \Waffler\Mockipho\Matchers\Matcher
  * @author ErickJMenezes <erickmenezes.dev@gmail.com>
  */
-function anyOf(array $possibilities): TypeExpectation
+function anyOf(array $possibilities): Matcher
 {
     return Mockipho::anyOf($possibilities);
 }
@@ -124,10 +124,10 @@ function anyOf(array $possibilities): TypeExpectation
 /**
  * Expects the given parameter to be a resource.
  *
- * @return \Waffler\Mockipho\Expectations\TypeExpectation
+ * @return \Waffler\Mockipho\Matchers\Matcher
  * @author ErickJMenezes <erickmenezes.dev@gmail.com>
  */
-function anyResource(): TypeExpectation
+function anyResource(): Matcher
 {
     return Mockipho::anyResource();
 }
@@ -135,10 +135,10 @@ function anyResource(): TypeExpectation
 /**
  * Expects the given parameter to be a string.
  *
- * @return \Waffler\Mockipho\Expectations\TypeExpectation
+ * @return \Waffler\Mockipho\Matchers\Matcher
  * @author ErickJMenezes <erickmenezes.dev@gmail.com>
  */
-function anyString(): TypeExpectation
+function anyString(): Matcher
 {
     return Mockipho::anyString();
 }
@@ -146,10 +146,10 @@ function anyString(): TypeExpectation
 /**
  * Expects the given parameter to be any value.
  *
- * @return \Waffler\Mockipho\Expectations\TypeExpectation
+ * @return \Waffler\Mockipho\Matchers\Matcher
  * @author ErickJMenezes <erickmenezes.dev@gmail.com>
  */
-function anyValue(): TypeExpectation
+function anyValue(): Matcher
 {
     return Mockipho::anyValue();
 }
@@ -157,10 +157,10 @@ function anyValue(): TypeExpectation
 /**
  * Expects the given parameter to be any callable.
  *
- * @return \Waffler\Mockipho\Expectations\TypeExpectation
+ * @return \Waffler\Mockipho\Matchers\Matcher
  * @author ErickJMenezes <erickmenezes.dev@gmail.com>
  */
-function anyCallable(): TypeExpectation
+function anyCallable(): Matcher
 {
     return Mockipho::anyCallable();
 }

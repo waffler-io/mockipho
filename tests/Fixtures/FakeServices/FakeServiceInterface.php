@@ -7,17 +7,13 @@
  * with this source code in the file LICENCE.
  */
 
-namespace Waffler\Mockipho\Tests\Fixtures\FakeTestCases;
+namespace Waffler\Mockipho\Tests\Fixtures\FakeServices;
 
-use Waffler\Mockipho\Mock;
-
-/**
- * Class TestCaseB.
- *
- * @author ErickJMenezes <erickmenezes.dev@gmail.com>
- */
-class TestCaseC
+interface FakeServiceInterface
 {
-    #[Mock]
-    public string $serviceA;
+    public function getFoo(): string;
+
+    public function sum(int $a, int $b): int;
+
+    public function dummy(mixed $value): mixed;
 }

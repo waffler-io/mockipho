@@ -2,11 +2,11 @@
 
 > **NOTE** This is a proof of concept. It is not intended to be used in production.
 > If you want to use it, please make sure you understand the risks.
+> Currently, it is not possible to mock classes, only interfaces.
 
 
 Mockipho is a wrapper around mockery that allows you to create mock objects integrated
-with phpunit.
-It's very similar to Java Mockito so take a look in the example below.
+with phpunit. It's very similar to Java Mockito so take a look in the example below.
 
 ```php
 <?php
@@ -14,13 +14,14 @@ It's very similar to Java Mockito so take a look in the example below.
 namespace Your\Namespace\Tests;
 
 use Your\Namespace\SomeClass;
+use Your\Namespace\FooInterface;
 use Waffler\Mockipho\Mock;
 use function Waffler\Mockipho\{when, anyString, anyInt};
 
 class SomeTest extends \Waffler\Mockipho\TestCase
 {
     #[Mock]
-    private Foo $fooMock;
+    private FooInterface $fooMock;
     
     // This class uses the Foo mock object
     private SomeClass $someClass;

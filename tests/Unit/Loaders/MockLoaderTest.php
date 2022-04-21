@@ -13,10 +13,16 @@ use Mockery\MockInterface;
 use PHPUnit\Framework\TestCase;
 use Waffler\Mockipho\Exceptions\IllegalPropertyException;
 use Waffler\Mockipho\Loaders\MockLoader;
+use Waffler\Mockipho\Tests\Fixtures\FakeServices\FakeServiceInterface;
 use Waffler\Mockipho\Tests\Fixtures\FakeServices\ServiceA;
-use Waffler\Mockipho\Tests\Fixtures\FakeTestCases\TestCaseA;
+use Waffler\Mockipho\Tests\Fixtures\FakeTestCases\DummyClassWithClassAsMock;
+use Waffler\Mockipho\Tests\Fixtures\FakeTestCases\DummyClassWithIllegalMockProperty;
+use Waffler\Mockipho\Tests\Fixtures\FakeTestCases\DummyClassWithIllegalMockPropertyType;
+use Waffler\Mockipho\Tests\Fixtures\FakeTestCases\DummyClassWithMockProperty;
 use Waffler\Mockipho\Tests\Fixtures\FakeTestCases\TestCaseB;
 use Waffler\Mockipho\Tests\Fixtures\FakeTestCases\TestCaseC;
+
+use function Waffler\Mockipho\when;
 
 /**
  * Class MockLoaderTest.
@@ -24,6 +30,9 @@ use Waffler\Mockipho\Tests\Fixtures\FakeTestCases\TestCaseC;
  * @author ErickJMenezes <erickmenezes.dev@gmail.com>
  * @covers \Waffler\Mockipho\Loaders\MockLoader
  * @covers \Waffler\Mockipho\Exceptions\IllegalPropertyException
+ * @covers \Waffler\Mockipho\ExpectationBuilder
+ * @covers \Waffler\Mockipho\MethodCall
+ * @covers \Waffler\Mockipho\Mockipho
  */
 class MockLoaderTest extends TestCase
 {
@@ -42,11 +51,24 @@ class MockLoaderTest extends TestCase
      */
     public function itMustCreateAMockForThePropertyWithTheMockAttribute(): void
     {
-        $object = new TestCaseA();
+        $object = new DummyClassWithMockProperty();
         $this->mockLoader->load($object);
-        self::assertTrue(isset($object->serviceA), "The object is not set.");
-        self::assertInstanceOf(ServiceA::class, $object->serviceA);
-        self::assertInstanceOf(MockInterface::class, $object->serviceA);
+        self::assertTrue(isset($object->fakeService), "The object is not set.");
+        self::assertInstanceOf(FakeServiceInterface::class, $object->fakeService);
+        self::assertInstanceOf(MockInterface::class, $object->fakeService);
+    }
+
+    /**
+     * @return void
+     * @author ErickJMenezes <erickmenezes.dev@gmail.com>
+     * @test
+     */
+    public function itMustForwardTheCallToTheUnderlyingMockWhenTheCallIsFromTheTestCase(): void
+    {
+        $object = new DummyClassWithMockProperty();
+        $this->mockLoader->load($object);
+        when($object->fakeService->getFoo())->thenReturn('bar');
+        self::assertNotEmpty($object->fakeService->mockery_getExpectationsFor('getFoo')->findExpectation([]));
     }
 
     /**
@@ -58,7 +80,7 @@ class MockLoaderTest extends TestCase
     {
         $this->expectException(IllegalPropertyException::class);
         $this->expectExceptionMessage("Mock property must have a type.");
-        $object = new TestCaseB();
+        $object = new DummyClassWithIllegalMockProperty();
         $this->mockLoader->load($object);
     }
 
@@ -71,7 +93,18 @@ class MockLoaderTest extends TestCase
     {
         $this->expectException(IllegalPropertyException::class);
         $this->expectExceptionMessage("[string] is not a valid class or interface.");
-        $object = new TestCaseC();
+        $object = new DummyClassWithIllegalMockPropertyType();
         $this->mockLoader->load($object);
+    }
+
+    /**
+     * @return void
+     * @author ErickJMenezes <erickmenezes.dev@gmail.com>
+     * @test
+     */
+    public function itMustThrowRuntimeExceptionWhenTheMockIsClass(): void
+    {
+        $this->expectException(\RuntimeException::class);
+        $this->mockLoader->load(new DummyClassWithClassAsMock());
     }
 }

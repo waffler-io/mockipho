@@ -9,14 +9,14 @@ declare(strict_types=1);
  * with this source code in the file LICENCE.
  */
 
-namespace Waffler\Mockipho\Expectations;
+namespace Waffler\Mockipho\Matchers;
 
 /**
  * Class AnyInstanceOf.
  *
  * @author ErickJMenezes <erickmenezes.dev@gmail.com>
  */
-class AnyInstanceOf implements TypeExpectation
+class AnyInstanceOf implements Matcher
 {
     /**
      * @param string $classString
@@ -27,7 +27,7 @@ class AnyInstanceOf implements TypeExpectation
     ) {
     }
 
-    public function test(mixed $value): bool
+    public function matches(mixed $value): bool
     {
         return $value instanceof $this->classString;
     }

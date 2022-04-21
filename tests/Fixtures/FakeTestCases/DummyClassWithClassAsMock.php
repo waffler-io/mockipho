@@ -11,13 +11,8 @@ namespace Waffler\Mockipho\Tests\Fixtures\FakeTestCases;
 
 use Waffler\Mockipho\Mock;
 
-/**
- * Class TestCaseB.
- *
- * @author ErickJMenezes <erickmenezes.dev@gmail.com>
- */
-class TestCaseB
+class DummyClassWithClassAsMock
 {
     #[Mock]
-    public $serviceA;
+    public DummyClassWithMockProperty $dummyClassWithMockProperty;
 }

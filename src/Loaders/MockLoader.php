@@ -15,10 +15,13 @@ use Mockery;
 use Mockery\HigherOrderMessage;
 use Mockery\LegacyMockInterface;
 use Mockery\MockInterface;
+use PHPUnit\Framework\TestCase;
+use ReflectionClass;
 use ReflectionNamedType;
 use Waffler\Mockipho\Exceptions\IllegalPropertyException;
+use Waffler\Mockipho\MethodCall;
 use Waffler\Mockipho\Mock;
-use ZEngine\Reflection\ReflectionClass;
+use ZEngine\Reflection\ReflectionClass as ZReflectionClass;
 
 /**
  * Class MockLoader.
@@ -49,76 +52,55 @@ class MockLoader
                     "[{$reflectionType->getName()}] is not a valid class or interface."
                 );
             }
-            $mock = $this->createMockFor($reflectionType->getName());
+            $mock = $this->createMockProxy($reflectionType->getName());
             $property->setValue($object, $mock);
         }
     }
 
-    /**
-     * @param string $target
-     *
-     * @return object
-     * @throws \ReflectionException
-     * @author ErickJMenezes <erickmenezes.dev@gmail.com>
-     */
-    private function createMockFor(string $target): object
+    private function createMockProxy(string $type): object
     {
-        $targetReflection = new ReflectionClass($target);
-        $baseMock = Mockery::mock(
-            $targetReflection->isFinal()
-                ? $targetReflection->newInstanceWithoutConstructor()
-                : $target
-        );
-        $targetReflection->setFinal(false);
-        $mock = $this->createMockProxy($baseMock, $targetReflection->isInterface() ? null : $target);
-        $mockProxyReflection = new ReflectionClass($mock);
+        return new class ($type) {
+            private MockInterface|HigherOrderMessage|LegacyMockInterface $mockipho_mock;
 
-        if ($targetReflection->isInterface()) {
-            $mockProxyReflection->addInterfaces($target);
-        } else {
-            foreach ($mockProxyReflection->getMethods(\ReflectionMethod::IS_PUBLIC) as $reflectionMethod) {
-                if (in_array($reflectionMethod->getName(), ['__call', '__construct'], true)) {
-                    continue;
-                }
-                $mockProxyReflection->removeMethods($reflectionMethod->getName());
+            public function __construct(public string $mockipho_type)
+            {
+                $this->mockipho_mock = Mockery::mock($mockipho_type);
+                $this->mockipho_loadMock();
             }
-        }
-        $mockProxyReflection->addInterfaces(MockInterface::class, LegacyMockInterface::class);
-        return $mock;
-    }
-
-    private function createMockProxy(MockInterface|HigherOrderMessage|LegacyMockInterface $mock, ?string $className = null): object
-    {
-        $factory = eval(sprintf('return fn() => new class %s {
-            public $mockeryBaseMock;
-            
-            public function __construct() {}
 
             public function __call(string $name, array $arguments): mixed
             {
-                if (!$this->calledFromTestCase() || $this->isMethodOfMockery($name)) {
-                    return $this->mockeryBaseMock->$name(...$arguments);
+                if (!$this->mockipho_isCalledFromTestCase() || $this->mockipho_isMethodOfMockery($name)) {
+                    return $this->mockipho_mock->$name(...$arguments);
                 }
-                return new \Waffler\Mockipho\MethodCall(
-                    $this->mockeryBaseMock,
+                return new MethodCall(
+                    $this->mockipho_mock,
                     $name,
                     $arguments
                 );
             }
 
-            private function calledFromTestCase(): bool
+            private function mockipho_isCalledFromTestCase(): bool
             {
-                return is_a(debug_backtrace(limit: 3)[2]["class"] ?? "", \PHPUnit\Framework\TestCase::class, true);
+                return is_a(debug_backtrace(limit: 4)[3]["class"] ?? "", TestCase::class, true);
             }
 
-            private function isMethodOfMockery(string $method): bool
+            private function mockipho_isMethodOfMockery(string $method): bool
             {
-                return method_exists(\Mockery\MockInterface::class, $method)
-                    || method_exists(\Mockery\LegacyMockInterface::class, $method);
+                return method_exists(MockInterface::class, $method)
+                    || method_exists(LegacyMockInterface::class, $method);
             }
-        };', $className ? "extends \\$className" : ''));
-        $obj = $factory();
-        $obj->mockeryBaseMock = $mock;
-        return $obj;
+
+            private function mockipho_loadMock(): void
+            {
+                $self = new ZReflectionClass($this);
+                if (interface_exists($this->mockipho_type)) {
+                    $self->addInterfaces($this->mockipho_type);
+                } else {
+                    throw new \RuntimeException("Currently only interface are supported, the type [{$this->mockipho_type}] cannot be mocked.");
+                }
+                $self->addInterfaces(MockInterface::class, LegacyMockInterface::class);
+            }
+        };
     }
 }

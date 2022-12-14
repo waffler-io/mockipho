@@ -26,12 +26,18 @@ class AnyOf implements Matcher
     public function matches(mixed $value): bool
     {
         foreach ($this->possibilities as $possibility) {
-            if ($possibility instanceof Matcher && $possibility->matches($value)) {
+            if ($this->isMatcher($possibility) && $possibility->matches($value)) {
                 return true;
             } elseif ($possibility === $value) {
                 return true;
             }
         }
         return false;
+    }
+
+    private function isMatcher(mixed $possibleMatcher): bool
+    {
+        return $possibleMatcher instanceof \Hamcrest\Matcher
+            || $possibleMatcher instanceof Matcher;
     }
 }

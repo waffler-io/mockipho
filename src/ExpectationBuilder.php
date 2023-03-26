@@ -23,6 +23,7 @@ use Mockery\VerificationExpectation;
  * @mixin Expectation
  * @mixin VerificationExpectation
  * @mixin CompositeExpectation
+ * @codeCoverageIgnore
  */
 class ExpectationBuilder implements ExpectationInterface
 {

@@ -10,41 +10,45 @@
 namespace Waffler\Mockipho\Tests\Unit;
 
 use Hamcrest\Matchers;
+use InvalidArgumentException;
 use Mockery\Exception\NoMatchingExpectationException;
 use Mockery\ExpectationInterface;
+use PHPUnit\Framework\TestCase;
 use stdClass;
 use Waffler\Mockipho\Matchers\Matcher;
 use Waffler\Mockipho\Mock;
 use Waffler\Mockipho\Mockipho;
-use Waffler\Mockipho\TestCase;
 use Waffler\Mockipho\Tests\Fixtures\FakeServices\FakeServiceInterface;
+use Waffler\Mockipho\Traits\LoadsMocks;
 
 /**
  * Class MockiphoTest.
  *
  * @author         ErickJMenezes <erickmenezes.dev@gmail.com>
- * @covers         \Waffler\Mockipho\Mockipho
- * @covers         \Waffler\Mockipho\Matchers\AnyArray
- * @covers         \Waffler\Mockipho\Matchers\AnyBoolean
- * @covers         \Waffler\Mockipho\Matchers\AnyDouble
- * @covers         \Waffler\Mockipho\Matchers\AnyFloat
- * @covers         \Waffler\Mockipho\Matchers\AnyInstanceOf
- * @covers         \Waffler\Mockipho\Matchers\AnyInt
- * @covers         \Waffler\Mockipho\Matchers\AnyObject
- * @covers         \Waffler\Mockipho\Matchers\AnyOf
- * @covers         \Waffler\Mockipho\Matchers\AnyResource
- * @covers         \Waffler\Mockipho\Matchers\AnyString
- * @covers         \Waffler\Mockipho\Matchers\AnyValue
- * @covers         \Waffler\Mockipho\Matchers\AnyCallable
- * @covers         \Waffler\Mockipho\ExpectationBuilder
- * @covers         \Waffler\Mockipho\MethodCall
- * @covers         \Waffler\Mockipho\Loaders\MockLoader
- * @covers         \Waffler\Mockipho\Mockipho
- * @covers         \Waffler\Mockipho\TestCase
+ * @covers \Waffler\Mockipho\Mockipho
+ * @covers \Waffler\Mockipho\Matchers\AnyArray
+ * @covers \Waffler\Mockipho\Matchers\AnyBoolean
+ * @covers \Waffler\Mockipho\Matchers\AnyDouble
+ * @covers \Waffler\Mockipho\Matchers\AnyFloat
+ * @covers \Waffler\Mockipho\Matchers\AnyInstanceOf
+ * @covers \Waffler\Mockipho\Matchers\AnyInt
+ * @covers \Waffler\Mockipho\Matchers\AnyObject
+ * @covers \Waffler\Mockipho\Matchers\AnyOf
+ * @covers \Waffler\Mockipho\Matchers\AnyResource
+ * @covers \Waffler\Mockipho\Matchers\AnyString
+ * @covers \Waffler\Mockipho\Matchers\AnyValue
+ * @covers \Waffler\Mockipho\Matchers\AnyCallable
+ * @covers \Waffler\Mockipho\MethodCall
+ * @covers \Waffler\Mockipho\Loaders\MockLoader
+ * @covers \Waffler\Mockipho\Mockipho
+ * @covers \Waffler\Mockipho\Traits\LoadsMocks
+ * @covers \Waffler\Mockipho\MockProxy
  * @psalm-suppress PropertyNotSetInConstructor
  */
 class MockiphoTest extends TestCase
 {
+    use LoadsMocks;
+
     /**
      * @var \Waffler\Mockipho\Tests\Fixtures\FakeServices\FakeServiceInterface&\Mockery\MockInterface
      */
@@ -380,12 +384,23 @@ class MockiphoTest extends TestCase
      * @author ErickJMenezes <erickmenezes.dev@gmail.com>
      * @test
      */
-    public function iteMustAcceptTheHamcrestMatcher(): void
+    public function itMustAcceptTheHamcrestMatcher(): void
     {
         Mockipho::when($this->typeExpectation->matches(Matchers::stringValue()))
             ->thenReturn(true);
 
         self::assertTrue($this->typeExpectation->mockery_getExpectationsFor('matches')
             ?->call(['foo']));
+    }
+
+    /**
+     * @return void
+     * @author ErickJMenezes <erickmenezes.dev@gmail.com>
+     * @test
+     */
+    public function itMustRejectNonMethodCallObjects(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        Mockipho::when(true);
     }
 }

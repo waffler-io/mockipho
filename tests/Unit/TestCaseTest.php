@@ -10,20 +10,24 @@
 namespace Waffler\Mockipho\Tests\Unit;
 
 use Mockery\MockInterface;
+use PHPUnit\Framework\TestCase;
 use Waffler\Mockipho\Mock;
-use Waffler\Mockipho\Mockipho;
-use Waffler\Mockipho\TestCase;
 use Waffler\Mockipho\Tests\Fixtures\FakeServices\FakeServiceInterface;
+use Waffler\Mockipho\Traits\LoadsMocks;
 
 /**
  * Class MockiphoPhpUnitIntegrationTest.
  *
  * @author         ErickJMenezes <erickmenezes.dev@gmail.com>
- * @covers         \Waffler\Mockipho\TestCase
+ * @covers \Waffler\Mockipho\Traits\LoadsMocks
+ * @covers \Waffler\Mockipho\MockProxy
+ * @covers \Waffler\Mockipho\Loaders\MockLoader
  * @psalm-suppress PropertyNotSetInConstructor
  */
 class TestCaseTest extends TestCase
 {
+    use LoadsMocks;
+
     /**
      * @var \Waffler\Mockipho\Tests\Fixtures\FakeServices\FakeServiceInterface&MockInterface
      */

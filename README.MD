@@ -17,30 +17,21 @@ use Your\Namespace\SomeClass;
 use Your\Namespace\FooInterface;
 use Waffler\Mockipho\Mock;
 use function Waffler\Mockipho\{when, anyString, anyInt};
+use Waffler\Mockipho\Traits\LoadsMocks;
 
 class SomeTest extends \Waffler\Mockipho\TestCase
 {
+    use LoadsMocks;
+
     #[Mock]
-    private FooInterface $fooMock;
-    
-    // This class uses the Foo mock object
-    private SomeClass $someClass;
-    
-    protected function setUp() : void
-    {
-        parent::setUp();
-        // Giving the mock to the class as a dependency injection
-        $this->someClass = new SomeClass($this->fooMock);
-    }
+    private FooInterface $foo;
 
     public function testSomething(): void
     {
-        // It doesn't matter the argument types of the bar() method. Your IDE should
-        // warn you about invalid arguments types, so don't worry about it.
-        when($this->fooMock->bar(anyString(), anyInt()))
+        when($this->foo->bar(anyString(), anyInt()))
             ->thenReturn('it works!');
 
-        self::assertEquals('it works!', $this->someClass->getFooBar()); // [OK]
+        // give the mock to your the class that depends on it and test whatever you want.
     }
 }
 ```
@@ -85,19 +76,16 @@ Add this line to your phpunit.xml file:
 ```
 
 ### 2 - Using the package custom TestCase
-First of all, you need to use the custom TestCase provided by this package.
+First of all, you need to use the following trait in your TestCase class.
 
 ```php
-use Waffler\Mockipho\TestCase;
-
-class MyClassTest extends TestCase // Use the custom TestCase 
-{}
+use Waffler\Mockipho\Traits\LoadsMocks;
 ```
 
-Use the `#[Mock]` annotation/attribute to mark the properties that you want to mock.
+Use the `#[Mock]` Attribute to mark the properties that you want to mock. Make sure the property is typed with a single type.
 ```php
 #[Mock]
-private Foo $foo;
+private FooInterface $foo;
 ```
 
 ### 3 - Creating expectations
@@ -141,7 +129,7 @@ Mockipho::when($foo->bar(Mockipho::anyString(), Mockipho::anyInt()))
 ```
 
 > **Important**: Don't worry about your class parameters types when using the `any**()` functions
-> because this package will automatically convert them to the right type.
+> because this package does modify the underlying mock object and changes the signature of the method.
 
 ### 4 - The complete list of functions
 ```php
@@ -158,6 +146,8 @@ anyResource();
 anyString();
 anyValue();
 anyCallable();
+
+// all hamcrest matchers included.
 ```
 
 ## Developing this package

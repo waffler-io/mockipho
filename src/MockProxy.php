@@ -12,7 +12,7 @@ use ZEngine\Reflection\ReflectionClass as ZReflectionClass;
  * Class MockProxy.
  *
  * @author ErickJMenezes <erickmenezes.dev@gmail.com>
- * @template T of object
+ * @template-covariant T
  * @mixin T
  */
 class MockProxy
@@ -56,12 +56,12 @@ class MockProxy
     /**
      * @param class-string<MockType> $mockiphoType
      *
-     * @return static<MockType>
+     * @return self<MockType>
      * @throws \ReflectionException
      * @author   ErickJMenezes <erickmenezes.dev@gmail.com>
      * @template MockType of object
      */
-    public static function create(string $mockiphoType): static
+    public static function create(string $mockiphoType): self
     {
         $mock = new self(Mockery::mock($mockiphoType));
         $self = new ZReflectionClass($mock);

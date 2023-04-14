@@ -40,8 +40,12 @@ class MockProxy
 
     private function mockipho_isCalledFromTestCase(): bool
     {
+        $class = debug_backtrace(limit: 4)[2]["class"] ?? null;
+        if (is_null($class)) {
+            return false;
+        }
         return is_a(
-            debug_backtrace(limit: 4)[3]["class"] ?? "",
+            $class,
             TestCase::class,
             true,
         );
